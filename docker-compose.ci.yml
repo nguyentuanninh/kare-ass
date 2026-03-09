@@ -1,0 +1,36 @@
+services:
+  test:
+    image: node:18-alpine
+    container_name: test-ci
+    working_dir: /app
+    command: sh -c "npm install pnpm -g && pnpm install && pnpm run test:ci"
+    env_file:
+      - .env.ci
+    depends_on:
+      test-db:
+        condition: service_healthy
+      test-redis:
+        condition: service_healthy
+    volumes:
+      - .:/app
+
+  test-db:
+    image: mysql:8.0
+    container_name: test-db-ci
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASS}
+      - MYSQL_DATABASE=${DB_NAME}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  test-redis:
+    image: redis:7-alpine
+    container_name: test-redis-ci
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5

@@ -1,0 +1,72 @@
+{
+    "env": {
+        "commonjs": false,
+        "node": true
+    },
+    "extends": [
+        "airbnb-base",
+        "airbnb-typescript/base",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:promise/recommended",
+        "prettier"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "project": "./tsconfig.eslint.json",
+        "tsconfigRootDir": "."
+    },
+    "plugins": ["@typescript-eslint", "promise", "import", "prettier"],
+    "ignorePatterns": ["src/lib/tslib.mjs"],
+    "rules": {
+        "prettier/prettier": "error",
+        "import/prefer-default-export": "off",
+        "import/no-default-export": "off",
+        "import/no-dynamic-require": "off",
+        "class-methods-use-this": "off",
+        "no-use-before-define": [
+            "error",
+            {
+                "functions": false,
+                "classes": true,
+                "variables": true
+            }
+        ],
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/no-use-before-define": [
+            "error",
+            {
+                "functions": false,
+                "classes": true,
+                "variables": true,
+                "typedefs": true
+            }
+        ],
+        "import/no-extraneous-dependencies": "off",
+        "no-underscore-dangle": ["error", { 
+            "allow": ["__filename", "__dirname", "__", "__h", "__l", "__mf", "__n"] 
+        }],
+        "@typescript-eslint/naming-convention": [
+            "error",
+            {
+                "selector": "variable",
+                "format": ["camelCase", "PascalCase", "snake_case", "UPPER_CASE"],
+                "filter": {
+                    "regex": "^(__filename|__dirname|__|__h|__l|__mf|__n)$",
+                    "match": false
+                }
+            }
+        ],
+        "@typescript-eslint/no-explicit-any": "warn",
+        "no-console": "warn",
+        "eqeqeq": ["error", "always"],
+        "@typescript-eslint/no-unused-vars": "warn"
+    },
+    "settings": {
+        "import/resolver": {
+            "typescript": {
+                "alwaysTryTypes": true,
+                "project": "./tsconfig.json"
+            }
+        }
+    }
+}

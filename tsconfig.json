@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build",
+    "module": "ESNext",
+    "esModuleInterop": true,
+    "target": "es2017",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "typeRoots": ["src/types", "node_modules/@types/"],
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "lib": ["es2015"],
+  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.cjs"],
+  "exclude": ["node_modules", "build", "__tests__", "coverage", "src/lib/tslib.mjs"]
+}
+

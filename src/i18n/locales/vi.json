@@ -1,0 +1,95 @@
+{
+  "role": {
+    "success": {
+      "created": "Tạo vai trò thành công",
+      "updated": "Cập nhật vai trò thành công",
+      "deleted": "Xóa vai trò thành công"
+    },
+    "errors": {
+      "not_found": "Không tìm thấy vai trò",
+      "name_taken": "Tên vai trò đã được sử dụng",
+      "no_fields": "Không có trường nào để cập nhật",
+      "create_failed": "Tạo vai trò thất bại",
+      "update_failed": "Cập nhật vai trò thất bại",
+      "delete_failed": "Xóa vai trò thất bại"
+    }
+  },
+  "user": {
+    "success": {
+      "created": "Tạo tài khoản thành công",
+      "password_updated": "Cập nhật mật khẩu thành công",
+      "username_found": "Tên đăng nhập đã tồn tại"
+    },
+    "errors": {
+      "not_found": "Không tìm thấy người dùng",
+      "username_taken": "Tên đăng nhập đã được sử dụng",
+      "username_not_found": "Tên đăng nhập không tồn tại",
+      "create_failed": "Tạo tài khoản thất bại",
+      "password_update_failed": "Cập nhật mật khẩu thất bại",
+      "password_mismatch": "Mật khẩu xác nhận không khớp",
+      "wrong_old_password": "Mật khẩu cũ không đúng",
+      "unauthorized": "Vui lòng xác thực"
+    }
+  },
+  "auth": {
+    "success": {
+      "registered": "Đăng ký tài khoản thành công",
+      "logged_in": "Đăng nhập thành công",
+      "logged_out": "Đăng xuất thành công",
+      "tokens_refreshed": "Làm mới token thành công"
+    },
+    "errors": {
+      "register_failed": "Đăng ký tài khoản thất bại",
+      "login_failed": "Đăng nhập thất bại",
+      "logout_failed": "Đăng xuất thất bại",
+      "invalid_username": "Tên đăng nhập không hợp lệ",
+      "wrong_password": "Mật khẩu không đúng",
+      "refresh_failed": "Làm mới token thất bại"
+    }
+  },
+  "token": {
+    "errors": {
+      "not_found": "Token không tồn tại",
+      "invalid_refresh": "Refresh token không hợp lệ",
+      "invalid_type": "Loại token không hợp lệ",
+      "unauthorized": "Vui lòng xác thực"
+    }
+  },
+  "common": {
+    "success": {
+      "created": "Tạo tài nguyên thành công",
+      "updated": "Cập nhật tài nguyên thành công",
+      "deleted": "Xóa tài nguyên thành công",
+      "retrieved": "Lấy dữ liệu thành công"
+    },
+    "errors": {
+      "not_found": "Không tìm thấy tài nguyên",
+      "unauthorized": "Truy cập không được phép",
+      "server_error": "Lỗi máy chủ nội bộ",
+      "validation_error": "Lỗi xác thực dữ liệu",
+      "too_many_requests": "Quá nhiều yêu cầu",
+      "unknown_error": "Lỗi không xác định"
+    }
+  },
+  "validation": {
+    "password_min_length": "Mật khẩu phải có ít nhất 6 ký tự",
+    "username_min_length": "Tên đăng nhập phải có ít nhất 6 ký tự",
+    "username_max_length": "Tên đăng nhập không được dài hơn 30 ký tự",
+    "username_format": "Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới",
+    "password_mismatch": "Mật khẩu không khớp",
+    "at_least_one_action": "Phải có ít nhất một hành động",
+    "at_least_one_permission": "Phải có ít nhất một quyền",
+    "at_least_one_role": "Phải có ít nhất một vai trò",
+    "required": {
+      "username": "username là bắt buộc",
+      "password": "password là bắt buộc",
+      "refresh_token": "refresh_token là bắt buộc",
+      "access_token": "access_token là bắt buộc",
+      "role_id": "role_id là bắt buộc",
+      "role_name": "role_name là bắt buộc",
+      "permissions": "permissions là bắt buộc",
+      "module": "module là bắt buộc",
+      "actions": "actions là bắt buộc"
+    }
+  }
+} 
