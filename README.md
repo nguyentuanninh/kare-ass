@@ -17,18 +17,22 @@ docker compose --profile dev up
 ```
 
 ### Services
-- Backend API: http://localhost:6768
-- MySQL Database: localhost:3306
-- Redis: localhost:6379
-- Adminer (Database UI): http://localhost:82 (development only)
+
+-   Backend API: http://localhost:3000
+-   Backend swagger doc: http://localhost:3000/api/v1/docs
+-   MySQL Database: localhost:3306
+-   Redis: localhost:6379
+-   Adminer (Database UI): http://localhost:82 (development only)
 
 ### Database Access
+
 When using Adminer or MySQL Workbench, use these credentials:
-- System: MySQL
-- Server: db
-- Username: root
-- Password: admin123
-- Database: aidentally
+
+-   System: MySQL
+-   Server: db
+-   Username: root
+-   Password: admin123
+-   Database: aidentally
 
 ## Manual Installation
 
@@ -53,7 +57,7 @@ Create a `.env` file in the root directory with the following variables:
 ```env
 # Server environment
 NODE_ENV=development
-PORT=6768
+PORT=3000
 
 # MySQL Database configuration
 DB_HOST=db
@@ -81,6 +85,7 @@ REDIS_PASSWORD=123456
 ## Database Commands
 
 ### Migration Commands
+
 ```bash
 # Check migration status
 pnpm run db:migrate:status
@@ -102,6 +107,7 @@ pnpm run db:migrate:undo:all
 ```
 
 ### Seeder Commands
+
 ```bash
 # Run all seeders
 pnpm run db:seed
@@ -114,6 +120,7 @@ pnpm run db:seed:undo
 ```
 
 ### Database Reset
+
 ```bash
 # Reset database (undo all migrations, run migrations, run seeders)
 pnpm run db:reset
@@ -121,29 +128,28 @@ pnpm run db:reset
 
 ## Features
 
-- **ECMAScript Modules (ESM)**
-- **ORM**: [Sequelize](https://sequelize.org/) orm for object data modeling
-- **Migration and Seed**: DB migration and Seed using [Sequelize-CLI](https://github.com/sequelize/cli) 
-- **Authentication and authorization**: using [passport](http://www.passportjs.org) with username-based authentication
-- **Error handling**: centralized error handling
-- **Validation**: request data validation using [Zod](https://zod.dev/)
-- **Logging**: using [winston](https://github.com/winstonjs/winston) 
-- **Testing**: unit tests using [Vitest](https://vitest.dev/)
-- **Caching**: Caching using [Redis](https://redis.io/)
-- **Bidirectional Communication**: using [Socket.io](https://socket.io/)
-- **Job scheduler**: with [Node-cron](https://www.npmjs.com/package/node-cron)
-- **Dependency management**: with [pnpm](https://pnpm.io/)
-- **Environment variables**: using [dotenv](https://github.com/motdotla/dotenv)
-- **CORS**: Cross-Origin Resource-Sharing enabled using [cors](https://github.com/expressjs/cors)
-- **Docker support**
-- **Linting**: with [ESLint](https://eslint.org) and [Prettier](https://prettier.io)
-- **Fast Compilation**: with [Rollup](https://rollupjs.org/)
-- **TypeScript**: Full TypeScript support with strict type checking
+-   **ECMAScript Modules (ESM)**
+-   **ORM**: [Sequelize](https://sequelize.org/) orm for object data modeling
+-   **Migration and Seed**: DB migration and Seed using [Sequelize-CLI](https://github.com/sequelize/cli)
+-   **Authentication and authorization**: using [passport](http://www.passportjs.org) with username-based authentication
+-   **Error handling**: centralized error handling
+-   **Validation**: request data validation using [Zod](https://zod.dev/)
+-   **Logging**: using [winston](https://github.com/winstonjs/winston)
+-   **Testing**: unit tests using [Vitest](https://vitest.dev/)
+-   **Caching**: Caching using [Redis](https://redis.io/)
+-   **Bidirectional Communication**: using [Socket.io](https://socket.io/)
+-   **Job scheduler**: with [Node-cron](https://www.npmjs.com/package/node-cron)
+-   **Dependency management**: with [pnpm](https://pnpm.io/)
+-   **Environment variables**: using [dotenv](https://github.com/motdotla/dotenv)
+-   **CORS**: Cross-Origin Resource-Sharing enabled using [cors](https://github.com/expressjs/cors)
+-   **Docker support**
+-   **Linting**: with [ESLint](https://eslint.org) and [Prettier](https://prettier.io)
+-   **Fast Compilation**: with [Rollup](https://rollupjs.org/)
+-   **TypeScript**: Full TypeScript support with strict type checking
 
 ## API Documentation
 
 The API documentation is available at `/api/v1/docs` when running the application. Here are the main endpoints:
-
 
 ## Development
 

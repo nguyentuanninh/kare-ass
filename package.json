@@ -24,6 +24,11 @@
         "format:check": "prettier --check \"src/**/*.{ts,js,json}\"",
         "typecheck": "tsc --noEmit",
         "prepare": "husky install",
+        "db:migrate": "NODE_ENV=development sequelize-cli db:migrate",
+        "db:migrate:undo": "NODE_ENV=development sequelize-cli db:migrate:undo:all",
+        "db:seed": "NODE_ENV=development sequelize-cli db:seed:all",
+        "db:seed:undo": "NODE_ENV=development sequelize-cli db:seed:undo:all",
+        "db:migrate:seed": "pnpm run db:migrate && pnpm run db:seed",
         "db:reset": "docker compose -f docker-compose.dev.yml down -v && docker compose -f docker-compose.dev.yml up -d && sleep 15 && docker exec -e NODE_ENV=development typescript-backend npx sequelize-cli db:migrate && docker exec -e NODE_ENV=development typescript-backend npx sequelize-cli db:seed:all"
     },
     "author": "Kien Ha",

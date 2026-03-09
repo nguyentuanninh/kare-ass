@@ -15,3 +15,8 @@ export enum ResourceType {
     USER = 'user',
     ROLE = 'role',
 }
+
+export enum FeedbackStatus {
+    PENDING = 'pending',
+    REVIEWED = 'reviewed',
+}

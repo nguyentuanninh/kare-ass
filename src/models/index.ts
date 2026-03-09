@@ -3,6 +3,7 @@ import dbConfig from '@/configs/database.js';
 import User from './User.js';
 import Token from './Token.js';
 import Role from './Role.js';
+import Feedback from './Feedback.js';
 
 let sequelize;
 if (dbConfig.database && dbConfig.username) {
@@ -13,6 +14,7 @@ const db = {
     user: User(sequelize, DataTypes),
     token: Token(sequelize, DataTypes),
     role: Role(sequelize, DataTypes),
+    feedback: Feedback(sequelize, DataTypes),
     sequelize,
     Sequelize,
 };

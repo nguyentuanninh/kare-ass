@@ -71,6 +71,20 @@
       "unknown_error": "Lỗi không xác định"
     }
   },
+  "feedback": {
+    "success": {
+      "created": "Gửi đánh giá thành công. Cảm ơn bạn!",
+      "reviewed": "Đã đánh dấu xem xét thành công",
+      "deleted": "Xóa đánh giá thành công"
+    },
+    "errors": {
+      "not_found": "Không tìm thấy đánh giá",
+      "create_failed": "Gửi đánh giá thất bại",
+      "update_failed": "Cập nhật đánh giá thất bại",
+      "delete_failed": "Xóa đánh giá thất bại",
+      "fetch_failed": "Lấy dữ liệu đánh giá thất bại"
+    }
+  },
   "validation": {
     "password_min_length": "Mật khẩu phải có ít nhất 6 ký tự",
     "username_min_length": "Tên đăng nhập phải có ít nhất 6 ký tự",

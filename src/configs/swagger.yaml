@@ -1,440 +1,798 @@
 openapi: 3.0.0
 info:
-  title: Aidentally API Documentation
-  version: 1.0.0
-  description: API documentation for Aidentally application
+    title: Aidentally API Documentation
+    version: 1.0.0
+    description: API documentation for Aidentally application
 
 servers:
-  - url: http://localhost:6768
-    description: Local development server
+    - url: http://localhost:3000/api/v1
+      description: Local development server
 
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: JWT token for authentication
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+            description: JWT token for authentication
 
-  schemas:
-    User:
-      type: object
-      required:
-        - uuid
-        - username
-        - status
-        - created_at
-        - updated_at
-      properties:
-        uuid:
-          type: string
-          format: uuid
-        username:
-          type: string
-        display_name:
-          type: string
-          minLength: 1
-        status:
-          type: number
-        address:
-          type: string
-        phone_number:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
+    schemas:
+        User:
+            type: object
+            required:
+                - uuid
+                - username
+                - status
+                - created_at
+                - updated_at
+            properties:
+                uuid:
+                    type: string
+                    format: uuid
+                username:
+                    type: string
+                display_name:
+                    type: string
+                    minLength: 1
+                status:
+                    type: number
+                address:
+                    type: string
+                phone_number:
+                    type: string
+                created_at:
+                    type: string
+                    format: date-time
+                updated_at:
+                    type: string
+                    format: date-time
 
-    LoginRequest:
-      type: object
-      required:
-        - username
-        - password
-      properties:
-        username:
-          type: string
-          example: johndoe
-        password:
-          type: string
-          format: password
-          minLength: 6
-          example: password123
+        LoginRequest:
+            type: object
+            required:
+                - username
+                - password
+            properties:
+                username:
+                    type: string
+                    example: johndoe
+                password:
+                    type: string
+                    format: password
+                    minLength: 6
+                    example: password123
 
-    Tokens:
-      type: object
-      required:
-        - access
-        - refresh
-      properties:
-        access:
-          type: object
-          required:
-            - token
-            - expires
-            - type
-          properties:
-            token:
-              type: string
-            expires:
-              type: string
-              format: date-time
-            type:
-              type: string
-              enum: [access]
-        refresh:
-          type: object
-          required:
-            - token
-            - expires
-            - type
-          properties:
-            token:
-              type: string
-            expires:
-              type: string
-              format: date-time
-            type:
-              type: string
-              enum: [refresh]
+        Tokens:
+            type: object
+            required:
+                - access
+                - refresh
+            properties:
+                access:
+                    type: object
+                    required:
+                        - token
+                        - expires
+                        - type
+                    properties:
+                        token:
+                            type: string
+                        expires:
+                            type: string
+                            format: date-time
+                        type:
+                            type: string
+                            enum: [access]
+                refresh:
+                    type: object
+                    required:
+                        - token
+                        - expires
+                        - type
+                    properties:
+                        token:
+                            type: string
+                        expires:
+                            type: string
+                            format: date-time
+                        type:
+                            type: string
+                            enum: [refresh]
 
-    ApiResponse:
-      type: object
-      required:
-        - success
-        - code
-        - message
-      properties:
-        success:
-          type: boolean
-        code:
-          type: number
-        message:
-          type: string
-        data:
-          type: object
-        error:
-          type: object
-          properties:
-            code:
-              type: number
-            message:
-              type: string
-            name:
-              type: string
-            isOperational:
-              type: boolean
+        ApiResponse:
+            type: object
+            required:
+                - success
+                - code
+                - message
+            properties:
+                success:
+                    type: boolean
+                code:
+                    type: number
+                message:
+                    type: string
+                data:
+                    type: object
+                error:
+                    type: object
+                    properties:
+                        code:
+                            type: number
+                        message:
+                            type: string
+                        name:
+                            type: string
+                        isOperational:
+                            type: boolean
 
-    LoginResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponse'
-        - type: object
-          properties:
-            data:
-              type: object
-              required:
-                - user
-                - tokens
-              properties:
-                user:
-                  $ref: '#/components/schemas/User'
-                tokens:
-                  $ref: '#/components/schemas/Tokens'
+        LoginResponse:
+            allOf:
+                - $ref: '#/components/schemas/ApiResponse'
+                - type: object
+                  properties:
+                      data:
+                          type: object
+                          required:
+                              - user
+                              - tokens
+                          properties:
+                              user:
+                                  $ref: '#/components/schemas/User'
+                              tokens:
+                                  $ref: '#/components/schemas/Tokens'
 
-    RegisterResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponse'
-        - type: object
-          properties:
-            data:
-              type: object
-              required:
-                - user
-                - tokens
-              properties:
-                user:
-                  $ref: '#/components/schemas/User'
-                tokens:
-                  $ref: '#/components/schemas/Tokens'
+        RegisterResponse:
+            allOf:
+                - $ref: '#/components/schemas/ApiResponse'
+                - type: object
+                  properties:
+                      data:
+                          type: object
+                          required:
+                              - user
+                              - tokens
+                          properties:
+                              user:
+                                  $ref: '#/components/schemas/User'
+                              tokens:
+                                  $ref: '#/components/schemas/Tokens'
 
-    RefreshTokenResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponse'
-        - type: object
-          properties:
-            data:
-              $ref: '#/components/schemas/Tokens'
+        RefreshTokenResponse:
+            allOf:
+                - $ref: '#/components/schemas/ApiResponse'
+                - type: object
+                  properties:
+                      data:
+                          $ref: '#/components/schemas/Tokens'
 
-    ChangePasswordRequest:
-      type: object
-      required:
-        - old_password
-        - password
-        - confirm_password
-      properties:
-        old_password:
-          type: string
-          format: password
-          minLength: 6
-        password:
-          type: string
-          format: password
-          minLength: 6
-        confirm_password:
-          type: string
-          format: password
-          minLength: 6
+        ChangePasswordRequest:
+            type: object
+            required:
+                - old_password
+                - password
+                - confirm_password
+            properties:
+                old_password:
+                    type: string
+                    format: password
+                    minLength: 6
+                password:
+                    type: string
+                    format: password
+                    minLength: 6
+                confirm_password:
+                    type: string
+                    format: password
+                    minLength: 6
 
-    CheckEmailRequest:
-      type: object
-      required:
-        - email
-      properties:
-        email:
-          type: string
-          format: email
-          example: user@example.com
+        CheckEmailRequest:
+            type: object
+            required:
+                - email
+            properties:
+                email:
+                    type: string
+                    format: email
+                    example: user@example.com
 
-    RefreshTokenRequest:
-      type: object
-      required:
-        - refresh_token
-      properties:
-        refresh_token:
-          type: string
-          minLength: 1
-          description: JWT refresh token
+        RefreshTokenRequest:
+            type: object
+            required:
+                - refresh_token
+            properties:
+                refresh_token:
+                    type: string
+                    minLength: 1
+                    description: JWT refresh token
 
-    UserCreateRequest:
-      type: object
-      required:
-        - username
-        - password
-        - confirm_password
-      properties:
-        username:
-          type: string
-        password:
-          type: string
-          format: password
-          minLength: 6
-        confirm_password:
-          type: string
-          format: password
-          minLength: 6
-        display_name:
-          type: string
-          minLength: 1
+        UserCreateRequest:
+            type: object
+            required:
+                - username
+                - password
+                - confirm_password
+            properties:
+                username:
+                    type: string
+                password:
+                    type: string
+                    format: password
+                    minLength: 6
+                confirm_password:
+                    type: string
+                    format: password
+                    minLength: 6
+                display_name:
+                    type: string
+                    minLength: 1
 
-    LogoutRequest:
-      type: object
-      required:
-        - access_token
-        - refresh_token
-      properties:
-        access_token:
-          type: string
-          minLength: 1
-          description: JWT access token to invalidate
-        refresh_token:
-          type: string
-          minLength: 1
-          description: JWT refresh token to invalidate
+        LogoutRequest:
+            type: object
+            required:
+                - access_token
+                - refresh_token
+            properties:
+                access_token:
+                    type: string
+                    minLength: 1
+                    description: JWT access token to invalidate
+                refresh_token:
+                    type: string
+                    minLength: 1
+                    description: JWT refresh token to invalidate
 
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Error message
-        code:
-          type: string
-          description: Error code
+        ErrorResponse:
+            type: object
+            properties:
+                message:
+                    type: string
+                    description: Error message
+                code:
+                    type: string
+                    description: Error code
+
+        Feedback:
+            type: object
+            properties:
+                uuid:
+                    type: string
+                    format: uuid
+                service_rating:
+                    type: integer
+                    minimum: 1
+                    maximum: 5
+                staff_rating:
+                    type: integer
+                    minimum: 1
+                    maximum: 5
+                hygiene_rating:
+                    type: integer
+                    minimum: 1
+                    maximum: 5
+                would_recommend:
+                    type: boolean
+                comment:
+                    type: string
+                    maxLength: 500
+                status:
+                    type: string
+                    enum: [pending, reviewed]
+                internal_note:
+                    type: string
+                    maxLength: 1000
+                created_at:
+                    type: string
+                    format: date-time
+                updated_at:
+                    type: string
+                    format: date-time
+
+        CreateFeedbackRequest:
+            type: object
+            required:
+                - service_rating
+                - staff_rating
+                - hygiene_rating
+                - would_recommend
+            properties:
+                service_rating:
+                    type: integer
+                    minimum: 1
+                    maximum: 5
+                    example: 4
+                staff_rating:
+                    type: integer
+                    minimum: 1
+                    maximum: 5
+                    example: 5
+                hygiene_rating:
+                    type: integer
+                    minimum: 1
+                    maximum: 5
+                    example: 4
+                would_recommend:
+                    type: boolean
+                    example: true
+                comment:
+                    type: string
+                    maxLength: 500
+                    example: Great service, very friendly staff!
+
+        ReviewFeedbackRequest:
+            type: object
+            properties:
+                internal_note:
+                    type: string
+                    maxLength: 1000
+                    example: Followed up with patient on 2025-04-10
+
+        FeedbackResponse:
+            allOf:
+                - $ref: '#/components/schemas/ApiResponse'
+                - type: object
+                  properties:
+                      data:
+                          $ref: '#/components/schemas/Feedback'
+
+        FeedbackListResponse:
+            allOf:
+                - $ref: '#/components/schemas/ApiResponse'
+                - type: object
+                  properties:
+                      data:
+                          type: object
+                          properties:
+                              items:
+                                  type: array
+                                  items:
+                                      $ref: '#/components/schemas/Feedback'
+                              total:
+                                  type: integer
+                              page:
+                                  type: integer
+                              limit:
+                                  type: integer
+
+        FeedbackStatsResponse:
+            allOf:
+                - $ref: '#/components/schemas/ApiResponse'
+                - type: object
+                  properties:
+                      data:
+                          type: object
+                          properties:
+                              total:
+                                  type: integer
+                              pending:
+                                  type: integer
+                              reviewed:
+                                  type: integer
+                              avg_service_rating:
+                                  type: number
+                                  format: float
+                              avg_staff_rating:
+                                  type: number
+                                  format: float
+                              avg_hygiene_rating:
+                                  type: number
+                                  format: float
+                              recommend_rate:
+                                  type: number
+                                  format: float
+                                  description: Percentage of users who would recommend
 
 paths:
-  /auth/register:
-    post:
-      tags:
-        - Auth
-      summary: Create a new user account
-      description: Register a new user and return authentication tokens
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserCreateRequest'
-      responses:
-        '201':
-          description: User registered successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RegisterResponse'
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
+    /auth/register:
+        post:
+            tags:
+                - Auth
+            summary: Create a new user account
+            description: Register a new user and return authentication tokens
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserCreateRequest'
+            responses:
+                '201':
+                    description: User registered successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RegisterResponse'
+                '400':
+                    description: Invalid request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiResponse'
 
-  /auth/email-exists:
-    post:
-      tags:
-        - Auth
-      summary: Check if username exists
-      description: Verify if a username is already registered
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CheckUsernameRequest'
-      responses:
-        '200':
-          description: Email check completed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
+    /auth/email-exists:
+        post:
+            tags:
+                - Auth
+            summary: Check if username exists
+            description: Verify if a username is already registered
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CheckUsernameRequest'
+            responses:
+                '200':
+                    description: Email check completed
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiResponse'
+                '400':
+                    description: Invalid request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiResponse'
 
-  /auth/login:
-    post:
-      tags:
-        - Auth
-      summary: Authenticate user with email and password
-      description: Returns user details and JWT tokens
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginRequest'
-      responses:
-        '200':
-          description: Successful login
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginResponse'
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-        '401':
-          description: Invalid credentials
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
+    /auth/login:
+        post:
+            tags:
+                - Auth
+            summary: Authenticate user with email and password
+            description: Returns user details and JWT tokens
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/LoginRequest'
+            responses:
+                '200':
+                    description: Successful login
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/LoginResponse'
+                '400':
+                    description: Invalid request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiResponse'
+                '401':
+                    description: Invalid credentials
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiResponse'
 
-  /auth/refresh-token:
-    post:
-      tags:
-        - Auth
-      summary: Get new access token
-      description: Generate new access token using refresh token
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RefreshTokenRequest'
-      responses:
-        '200':
-          description: New tokens generated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RefreshTokenResponse'
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-        '401':
-          description: Invalid refresh token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
+    /auth/refresh-token:
+        post:
+            tags:
+                - Auth
+            summary: Get new access token
+            description: Generate new access token using refresh token
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RefreshTokenRequest'
+            responses:
+                '200':
+                    description: New tokens generated
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RefreshTokenResponse'
+                '400':
+                    description: Invalid request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiResponse'
+                '401':
+                    description: Invalid refresh token
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiResponse'
 
-  /auth/logout:
-    post:
-      tags:
-        - Auth
-      summary: Logout user
-      description: Invalidate user's session and refresh token
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LogoutRequest'
-      responses:
-        '200':
-          description: Logged out successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Logged out successfully
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+    /auth/logout:
+        post:
+            tags:
+                - Auth
+            summary: Logout user
+            description: Invalidate user's session and refresh token
+            security:
+                - bearerAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/LogoutRequest'
+            responses:
+                '200':
+                    description: Logged out successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Logged out successfully
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
 
-  /auth/change-password:
-    put:
-      tags:
-        - Auth
-      summary: Change user password
-      description: Update user's password
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChangePasswordRequest'
-      responses:
-        '200':
-          description: Password changed successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Password changed successfully
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse' 
+    /auth/change-password:
+        put:
+            tags:
+                - Auth
+            summary: Change user password
+            description: Update user's password
+            security:
+                - bearerAuth: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ChangePasswordRequest'
+            responses:
+                '200':
+                    description: Password changed successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Password changed successfully
+                '400':
+                    description: Invalid request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+    /feedbacks:
+        post:
+            tags:
+                - Feedbacks
+            summary: Submit anonymous feedback
+            description: Public endpoint — no authentication required
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateFeedbackRequest'
+            responses:
+                '201':
+                    description: Feedback submitted successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FeedbackResponse'
+                '400':
+                    description: Validation error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiResponse'
+                '429':
+                    description: Too many requests
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiResponse'
+
+        get:
+            tags:
+                - Feedbacks
+            summary: Get all feedbacks (paginated)
+            description: Admin only — requires authentication
+            security:
+                - bearerAuth: []
+            parameters:
+                - in: query
+                  name: page
+                  schema:
+                      type: integer
+                      minimum: 1
+                      default: 1
+                  description: Page number
+                - in: query
+                  name: limit
+                  schema:
+                      type: integer
+                      minimum: 1
+                      maximum: 100
+                      default: 10
+                  description: Items per page
+                - in: query
+                  name: status
+                  schema:
+                      type: string
+                      enum: [pending, reviewed]
+                  description: Filter by status
+                - in: query
+                  name: start_date
+                  schema:
+                      type: string
+                      format: date
+                  description: Filter from date (YYYY-MM-DD)
+                - in: query
+                  name: end_date
+                  schema:
+                      type: string
+                      format: date
+                  description: Filter to date (YYYY-MM-DD)
+            responses:
+                '200':
+                    description: List of feedbacks
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FeedbackListResponse'
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+    /feedbacks/stats:
+        get:
+            tags:
+                - Feedbacks
+            summary: Get feedback statistics
+            description: Admin only — returns aggregated statistics across all feedbacks
+            security:
+                - bearerAuth: []
+            responses:
+                '200':
+                    description: Feedback statistics
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FeedbackStatsResponse'
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+
+    /feedbacks/{feedbackId}:
+        get:
+            tags:
+                - Feedbacks
+            summary: Get a feedback by UUID
+            description: Admin only — retrieve a single feedback record
+            security:
+                - bearerAuth: []
+            parameters:
+                - in: path
+                  name: feedbackId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Feedback UUID
+            responses:
+                '200':
+                    description: Feedback detail
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FeedbackResponse'
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '404':
+                    description: Feedback not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiResponse'
+
+        delete:
+            tags:
+                - Feedbacks
+            summary: Delete a feedback
+            description: Admin only — permanently delete a feedback record
+            security:
+                - bearerAuth: []
+            parameters:
+                - in: path
+                  name: feedbackId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Feedback UUID
+            responses:
+                '200':
+                    description: Feedback deleted successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiResponse'
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '404':
+                    description: Feedback not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiResponse'
+
+    /feedbacks/{feedbackId}/review:
+        patch:
+            tags:
+                - Feedbacks
+            summary: Mark feedback as reviewed
+            description: Admin only — mark a feedback as reviewed with an optional internal note
+            security:
+                - bearerAuth: []
+            parameters:
+                - in: path
+                  name: feedbackId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Feedback UUID
+            requestBody:
+                required: false
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ReviewFeedbackRequest'
+            responses:
+                '200':
+                    description: Feedback reviewed successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FeedbackResponse'
+                '400':
+                    description: Validation error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiResponse'
+                '401':
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ErrorResponse'
+                '404':
+                    description: Feedback not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiResponse'

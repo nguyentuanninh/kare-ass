@@ -41,6 +41,7 @@ export default class AuthController {
     login: RequestHandler = async (req, res, next) => {
         try {
             const { username, password } = req.body;
+            console.log('hello');
             const loginResponse = await this.authService.loginWithUsernamePassword(
                 username,
                 password
