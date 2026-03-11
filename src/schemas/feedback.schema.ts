@@ -43,6 +43,16 @@ export const DeleteFeedbackRequestSchema = z.object({
     }),
 });
 
+const GetStatsQuerySchema = z.object({
+    start_date: z.string().optional(),
+    end_date: z.string().optional(),
+});
+
+export const GetStatsRequestSchema = z.object({
+    query: GetStatsQuerySchema,
+});
+
 export type CreateFeedbackBodyType = z.infer<typeof CreateFeedbackBodySchema>;
 export type ReviewFeedbackBodyType = z.infer<typeof ReviewFeedbackBodySchema>;
 export type GetFeedbacksQueryType = z.infer<typeof GetFeedbacksQuerySchema>;
+export type GetStatsQueryType = z.infer<typeof GetStatsQuerySchema>;

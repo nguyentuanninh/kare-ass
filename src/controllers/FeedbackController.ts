@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import FeedbackService from '@/services/FeedbackService.js';
-import { GetFeedbacksQueryType } from '@/schemas/feedback.schema.js';
+import { GetFeedbacksQueryType, GetStatsQueryType } from '@/schemas/feedback.schema.js';
 
 export default class FeedbackController {
     private feedbackService: FeedbackService;
@@ -80,7 +80,8 @@ export default class FeedbackController {
 
     getStats: RequestHandler = async (req, res, next) => {
         try {
-            const response = await this.feedbackService.getStats();
+            const query = req.query as unknown as GetStatsQueryType;
+            const response = await this.feedbackService.getStats(query);
             if (response.success) {
                 res.status(response.code).send(response);
             } else {

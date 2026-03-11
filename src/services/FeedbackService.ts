@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Op } from 'sequelize';
 import { logger } from '@/configs/logger.js';
 import FeedbackDao from '@/dao/FeedbackDao.js';
+import FeedbackStatDao from '@/dao/FeedbackStatDao.js';
 import responseHandler from '@/helpers/responseHandler.js';
 import { FeedbackStatus } from '@/configs/constant.js';
 import { useI18n } from '@/middlewares/asyncContext.js';
@@ -12,14 +13,44 @@ import {
     CreateFeedbackBodyType,
     ReviewFeedbackBodyType,
     GetFeedbacksQueryType,
+    GetStatsQueryType,
 } from '@/schemas/feedback.schema.js';
 
 export default class FeedbackService {
     private feedbackDao: FeedbackDao;
+    private feedbackStatDao: FeedbackStatDao;
 
     constructor() {
         this.feedbackDao = new FeedbackDao();
+        this.feedbackStatDao = new FeedbackStatDao();
     }
+
+    private getTodayDate = (): string => {
+        return new Date().toISOString().split('T')[0];
+    };
+
+    private recordFeedbackCreated = async (feedback: {
+        service_rating: number;
+        staff_rating: number;
+        hygiene_rating: number;
+        would_recommend: boolean;
+    }): Promise<void> => {
+        await this.feedbackStatDao.incrementByDate(this.getTodayDate(), {
+            count: 1,
+            sum_service_rating: feedback.service_rating,
+            sum_staff_rating: feedback.staff_rating,
+            sum_hygiene_rating: feedback.hygiene_rating,
+            recommend_count: feedback.would_recommend ? 1 : 0,
+            pending_delta: 1,
+        });
+    };
+
+    private recordFeedbackReviewed = async (): Promise<void> => {
+        await this.feedbackStatDao.incrementByDate(this.getTodayDate(), {
+            pending_delta: -1,
+            reviewed_delta: 1,
+        });
+    };
 
     createFeedback = async (
         body: CreateFeedbackBodyType
@@ -45,6 +76,13 @@ export default class FeedbackService {
                 );
             }
 
+            await this.recordFeedbackCreated({
+                service_rating: body.service_rating,
+                staff_rating: body.staff_rating,
+                hygiene_rating: body.hygiene_rating,
+                would_recommend: body.would_recommend,
+            });
+
             const { id, ...feedbackResponse } = feedback.toJSON();
 
             return responseHandler.returnSuccess(
@@ -58,9 +96,7 @@ export default class FeedbackService {
         }
     };
 
-    getFeedbacks = async (
-        query: GetFeedbacksQueryType
-    ): Promise<ApiResponse> => {
+    getFeedbacks = async (query: GetFeedbacksQueryType): Promise<ApiResponse> => {
         const i18n = useI18n();
         try {
             const { page, limit, status, start_date, end_date } = query;
@@ -97,7 +133,9 @@ export default class FeedbackService {
         }
     };
 
-    getFeedbackByUuid = async (uuid: string): Promise<ApiResponse<IFeedbackResponse | undefined>> => {
+    getFeedbackByUuid = async (
+        uuid: string
+    ): Promise<ApiResponse<IFeedbackResponse | undefined>> => {
         const i18n = useI18n();
         try {
             const feedback = await this.feedbackDao.findOneByWhere({ uuid });
@@ -122,10 +160,7 @@ export default class FeedbackService {
         }
     };
 
-    reviewFeedback = async (
-        uuid: string,
-        body: ReviewFeedbackBodyType
-    ): Promise<ApiResponse> => {
+    reviewFeedback = async (uuid: string, body: ReviewFeedbackBodyType): Promise<ApiResponse> => {
         const i18n = useI18n();
         try {
             const feedback = await this.feedbackDao.findOneByWhere({ uuid });
@@ -155,6 +190,10 @@ export default class FeedbackService {
                     httpStatus.BAD_REQUEST,
                     i18n.__('feedback.errors.update_failed')
                 );
+            }
+
+            if (feedback.toJSON().status === FeedbackStatus.PENDING) {
+                await this.recordFeedbackReviewed();
             }
 
             return responseHandler.returnSuccess(
@@ -198,59 +237,19 @@ export default class FeedbackService {
         }
     };
 
-    getStats = async (): Promise<ApiResponse> => {
+    getStats = async (query: GetStatsQueryType): Promise<ApiResponse> => {
         const i18n = useI18n();
         try {
-            const allFeedbacks = await this.feedbackDao.findAll();
-
-            const total = allFeedbacks.length;
-
-            if (total === 0) {
-                return responseHandler.returnSuccess(httpStatus.OK, i18n.__('common.success.retrieved'), {
-                    total: 0,
-                    avg_service_rating: 0,
-                    avg_staff_rating: 0,
-                    avg_hygiene_rating: 0,
-                    avg_overall_rating: 0,
-                    recommend_rate: 0,
-                    pending_count: 0,
-                    reviewed_count: 0,
-                });
-            }
-
-            const sum = allFeedbacks.reduce(
-                (acc, f) => {
-                    const json = f.toJSON();
-                    return {
-                        service: acc.service + json.service_rating,
-                        staff: acc.staff + json.staff_rating,
-                        hygiene: acc.hygiene + json.hygiene_rating,
-                        recommend: acc.recommend + (json.would_recommend ? 1 : 0),
-                        pending: acc.pending + (json.status === FeedbackStatus.PENDING ? 1 : 0),
-                        reviewed: acc.reviewed + (json.status === FeedbackStatus.REVIEWED ? 1 : 0),
-                    };
-                },
-                { service: 0, staff: 0, hygiene: 0, recommend: 0, pending: 0, reviewed: 0 }
+            const stats = await this.feedbackStatDao.getAggregatedStats(
+                query.start_date,
+                query.end_date
             );
 
-            const avg_service_rating = parseFloat((sum.service / total).toFixed(2));
-            const avg_staff_rating = parseFloat((sum.staff / total).toFixed(2));
-            const avg_hygiene_rating = parseFloat((sum.hygiene / total).toFixed(2));
-            const avg_overall_rating = parseFloat(
-                ((avg_service_rating + avg_staff_rating + avg_hygiene_rating) / 3).toFixed(2)
+            return responseHandler.returnSuccess(
+                httpStatus.OK,
+                i18n.__('common.success.retrieved'),
+                stats
             );
-            const recommend_rate = parseFloat(((sum.recommend / total) * 100).toFixed(1));
-
-            return responseHandler.returnSuccess(httpStatus.OK, i18n.__('common.success.retrieved'), {
-                total,
-                avg_service_rating,
-                avg_staff_rating,
-                avg_hygiene_rating,
-                avg_overall_rating,
-                recommend_rate,
-                pending_count: sum.pending,
-                reviewed_count: sum.reviewed,
-            });
         } catch (e) {
             logger.error('getStats', e);
             throw Error(i18n.__('feedback.errors.fetch_failed'));
