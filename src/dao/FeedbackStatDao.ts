@@ -1,4 +1,4 @@
-import { Op, fn, col, literal } from 'sequelize';
+import { Op, fn, col, literal, WhereOptions } from 'sequelize';
 import models from '@/models/index.js';
 import { IFeedbackStatDB, IFeedbackStatResponse } from '@/models/interfaces/IFeedbackStat.js';
 import { ModelStatic } from 'sequelize';
@@ -46,28 +46,45 @@ export default class FeedbackStatDao extends SuperDao<IFeedbackStatDB> {
         start_date?: string,
         end_date?: string
     ): Promise<IFeedbackStatResponse> {
-        const dateWhere: Record<string, any> = {};
+        const dateWhere: WhereOptions<IFeedbackStatDB> = {};
         if (start_date || end_date) {
-            if (start_date) dateWhere[Op.gte] = start_date;
-            if (end_date) dateWhere[Op.lte] = end_date;
+            const dateCondition: { [Op.gte]?: string; [Op.lte]?: string } = {};
+            if (start_date) dateCondition[Op.gte] = start_date;
+            if (end_date) dateCondition[Op.lte] = end_date;
+            (dateWhere as any).date = dateCondition;
         }
 
         const [ratingRow, statusRow] = await Promise.all([
             this.FeedbackStat.findOne({
                 attributes: [
                     [fn('COALESCE', fn('SUM', col('count')), literal('0')), 'total'],
-                    [fn('COALESCE', fn('SUM', col('sum_service_rating')), literal('0')), 'sum_service'],
+                    [
+                        fn('COALESCE', fn('SUM', col('sum_service_rating')), literal('0')),
+                        'sum_service',
+                    ],
                     [fn('COALESCE', fn('SUM', col('sum_staff_rating')), literal('0')), 'sum_staff'],
-                    [fn('COALESCE', fn('SUM', col('sum_hygiene_rating')), literal('0')), 'sum_hygiene'],
-                    [fn('COALESCE', fn('SUM', col('recommend_count')), literal('0')), 'sum_recommend'],
+                    [
+                        fn('COALESCE', fn('SUM', col('sum_hygiene_rating')), literal('0')),
+                        'sum_hygiene',
+                    ],
+                    [
+                        fn('COALESCE', fn('SUM', col('recommend_count')), literal('0')),
+                        'sum_recommend',
+                    ],
                 ],
-                where: Object.keys(dateWhere).length ? { date: dateWhere } : {},
+                where: Object.keys(dateWhere).length ? dateWhere : {},
                 raw: true,
             }),
             this.FeedbackStat.findOne({
                 attributes: [
-                    [fn('COALESCE', fn('SUM', col('pending_delta')), literal('0')), 'pending_count'],
-                    [fn('COALESCE', fn('SUM', col('reviewed_delta')), literal('0')), 'reviewed_count'],
+                    [
+                        fn('COALESCE', fn('SUM', col('pending_delta')), literal('0')),
+                        'pending_count',
+                    ],
+                    [
+                        fn('COALESCE', fn('SUM', col('reviewed_delta')), literal('0')),
+                        'reviewed_count',
+                    ],
                 ],
                 raw: true,
             }),
